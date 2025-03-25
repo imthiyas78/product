@@ -1,6 +1,6 @@
-org\in\com\dao\ProductDao.class
-org\in\com\dto\Product.class
-org\in\com\controller\ProductController.class
-org\in\com\dao\ConnectDAO.class
-org\in\com\service\ProductService.class
-org\in\com\service\impl\ProductServiceImpl.class
+org/in/com/dao/ProductDao.class
+org/in/com/service/impl/ProductServiceImpl.class
+org/in/com/service/ProductService.class
+org/in/com/dto/Product.class
+org/in/com/dao/ConnectDAO.class
+org/in/com/controller/ProductController.class

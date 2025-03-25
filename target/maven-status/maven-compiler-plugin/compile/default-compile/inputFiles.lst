@@ -1,6 +1,6 @@
-D:\MVC\product\src\main\java\org\in\com\dao\ConnectDAO.java
-D:\MVC\product\src\main\java\org\in\com\service\impl\ProductServiceImpl.java
-D:\MVC\product\src\main\java\org\in\com\service\ProductService.java
-D:\MVC\product\src\main\java\org\in\com\dao\ProductDao.java
-D:\MVC\product\src\main\java\org\in\com\controller\ProductController.java
-D:\MVC\product\src\main\java\org\in\com\dto\Product.java
+/home/costiv_services/MVC/product/src/main/java/org/in/com/service/ProductService.java
+/home/costiv_services/MVC/product/src/main/java/org/in/com/controller/ProductController.java
+/home/costiv_services/MVC/product/src/main/java/org/in/com/dto/Product.java
+/home/costiv_services/MVC/product/src/main/java/org/in/com/service/impl/ProductServiceImpl.java
+/home/costiv_services/MVC/product/src/main/java/org/in/com/dao/ConnectDAO.java
+/home/costiv_services/MVC/product/src/main/java/org/in/com/dao/ProductDao.java
