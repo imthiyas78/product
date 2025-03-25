@@ -17,7 +17,11 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'mvn clean install -DskipTests=true'  // Run Maven build command, skipping tests to speed up build
+                    // Run Maven build
+                    sh "'${MAVEN_HOME}/bin/mvn' clean install"
+
+                    // Debugging step: List files in the target directory
+                    sh 'ls -l target/'
                 }
             }
         }
@@ -25,7 +29,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    sh 'mvn test'  // Run Maven tests
+                    // Run Maven tests
+                    sh 'mvn test'
                 }
             }
         }
@@ -34,17 +39,17 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying application...'
-
-                    // Copy the WAR file to Tomcat's webapps directory
-                    // Make sure that Jenkins has permission to write to the directory
-                    sh 'cp target/product.war /usr/tomcat/cargo-tomcat/webapps/'
-
-                    // Optionally, restart Tomcat (if required)
-                    // Ensure Jenkins has necessary permissions to restart Tomcat
-                    // If sudo permissions are needed, consider setting up passwordless sudo for Jenkins user.
-                    sh 'sudo systemctl restart tomcat'
-
-                    echo 'Deployment complete!'
+                    
+                    // Check if the WAR file exists
+                    def warFile = 'target/product.war'
+                    if (fileExists(warFile)) {
+                        // If the WAR file exists, deploy it
+                        sh "cp ${warFile} /usr/tomcat/cargo-tomcat/webapps/"
+                        echo 'Deployment complete!'
+                    } else {
+                        // If WAR file is not found, stop the pipeline and notify the error
+                        error "WAR file not found: ${warFile}"
+                    }
                 }
             }
         }
@@ -52,8 +57,7 @@ pipeline {
 
     post {
         always {
-            // Clean workspace after job is finished
-            cleanWs()
+            cleanWs()  // Clean workspace after the pipeline execution
         }
     }
 }
