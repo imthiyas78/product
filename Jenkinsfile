@@ -5,6 +5,7 @@ pipeline {
         MAVEN_HOME = '/usr/share/maven'  // Make sure this path is correct based on your environment
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk' // Update with your Java 17 path if necessary
         TOMCAT_WEBAPPS_DIR = '/usr/tomcat/cargo-tomcat/webapps' // Update this path if needed
+        TARGET_DIR = '/var/lib/jenkins/workspace/maven-war-build/target/product' // Update the target directory where WAR file is built
     }
 
     stages {
@@ -37,9 +38,9 @@ pipeline {
             steps {
                 script {
                     // Check if the WAR file is located in the correct directory
-                    def warFile = 'target/product/product.war'  // Path where the WAR file is located
+                    def warFile = "${TARGET_DIR}/product.war"  // Update path based on the location of the WAR file
                     echo "Checking for WAR file at ${warFile}"
-                    
+
                     // Ensure the WAR file exists before deploying
                     if (fileExists(warFile)) {
                         echo "Deploying WAR file to Tomcat"
