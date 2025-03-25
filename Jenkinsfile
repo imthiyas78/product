@@ -17,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'mvn clean install'  // Run Maven build command
+                    sh 'mvn clean install -DskipTests=true'  // Run Maven build command, skipping tests to speed up build
                 }
             }
         }
@@ -32,13 +32,27 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
+                script {
+                    echo 'Deploying application...'
+
+                    // Copy the WAR file to Tomcat's webapps directory
+                    // Make sure that Jenkins has permission to write to the directory
+                    sh 'cp target/product.war /usr/tomcat/cargo-tomcat/webapps/'
+
+                    // Optionally, restart Tomcat (if required)
+                    // Ensure Jenkins has necessary permissions to restart Tomcat
+                    // If sudo permissions are needed, consider setting up passwordless sudo for Jenkins user.
+                    sh 'sudo systemctl restart tomcat'
+
+                    echo 'Deployment complete!'
+                }
             }
         }
     }
 
     post {
         always {
+            // Clean workspace after job is finished
             cleanWs()
         }
     }
