@@ -2,26 +2,24 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = '/usr/share/maven'  // Path to Maven installation
-        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk'  // Path to OpenJDK 17
-        PATH = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${env.PATH}"  // Update PATH with JAVA_HOME and MAVEN_HOME
+        MAVEN_HOME = '/usr/share/maven'  // Make sure this path is correct based on your environment
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk' // Update with your Java 17 path if necessary
+        TOMCAT_WEBAPPS_DIR = '/usr/tomcat/cargo-tomcat/webapps' // Update this path if needed
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/imthiyas78/product.git', branch: 'master'
+                // Checkout code from GitHub repository
+                checkout scm
             }
         }
 
         stage('Build') {
             steps {
                 script {
-                    // Run Maven build
-                    sh "'${MAVEN_HOME}/bin/mvn' clean install"
-
-                    // Debugging step: List files in the target directory
-                    sh 'ls -l target/'
+                    // Run Maven build to clean, compile, and package the WAR file
+                    sh "'${MAVEN_HOME}/bin/mvn' clean install -DskipTests"
                 }
             }
         }
@@ -29,8 +27,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Run Maven tests
-                    sh 'mvn test'
+                    // Run tests (if any)
+                    sh "'${MAVEN_HOME}/bin/mvn' test"
                 }
             }
         }
@@ -38,17 +36,17 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    echo 'Deploying application...'
+                    // Check if the WAR file is located in the correct directory
+                    def warFile = 'target/product/product.war'  // Path where the WAR file is located
+                    echo "Checking for WAR file at ${warFile}"
                     
-                    // Check if the WAR file exists
-                    def warFile = 'target/product.war'
+                    // Ensure the WAR file exists before deploying
                     if (fileExists(warFile)) {
-                        // If the WAR file exists, deploy it
-                        sh "cp ${warFile} /usr/tomcat/cargo-tomcat/webapps/"
-                        echo 'Deployment complete!'
+                        echo "Deploying WAR file to Tomcat"
+                        // Copy the WAR file to Tomcat's webapps directory
+                        sh "cp ${warFile} ${TOMCAT_WEBAPPS_DIR}/"
                     } else {
-                        // If WAR file is not found, stop the pipeline and notify the error
-                        error "WAR file not found: ${warFile}"
+                        error "WAR file was not found at ${warFile}! Build failed."
                     }
                 }
             }
@@ -57,7 +55,18 @@ pipeline {
 
     post {
         always {
-            cleanWs()  // Clean workspace after the pipeline execution
+            // Clean up workspace after the build
+            cleanWs()
+        }
+
+        success {
+            // Add any post-build success steps here
+            echo 'Build and deployment completed successfully!'
+        }
+
+        failure {
+            // Handle build failure (you could send notifications, etc.)
+            echo 'Build or deployment failed!'
         }
     }
 }
