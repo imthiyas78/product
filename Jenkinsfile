@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = '/usr/share/maven'  // Make sure this path is correct based on your environment
+        MAVEN_HOME = '/usr/share/maven'  // Ensure this path is correct based on your environment
         JAVA_HOME = '/usr/lib/jvm/java-17-openjdk' // Update with your Java 17 path if necessary
-        TOMCAT_WEBAPPS_DIR = '/usr/tomcat/cargo-tomcat/webapps' // Update this path if needed
-        TARGET_DIR = '/var/lib/jenkins/workspace/maven-war-build/target/product' // Update the target directory where WAR file is built
+        TOMCAT_WEBAPPS_DIR = '/usr/tomcat/cargo-tomcat/webapps' // The correct Tomcat directory
+        TARGET_DIR = '/var/lib/jenkins/workspace/maven-war-build/target/product' // Directory where WAR file is expected
     }
 
     stages {
@@ -37,8 +37,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Check if the WAR file is located in the correct directory
-                    def warFile = "${TARGET_DIR}/product.war"  // Update path based on the location of the WAR file
+                    // Correct WAR file path in Tomcat's webapps directory
+                    def warFile = '/usr/tomcat/cargo-tomcat/webapps/product.war'  // Correct path based on build logs
                     echo "Checking for WAR file at ${warFile}"
 
                     // Ensure the WAR file exists before deploying
