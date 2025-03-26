@@ -1,0 +1,959 @@
+{
+	"info": {
+		"_postman_id": "9be1afaa-e9c6-4ff9-acc9-00a1103654ac",
+		"name": "BookingBITS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34496769",
+		"_collection_link": "https://blue-desert-488041.postman.co/workspace/BITSSTAGGING~3ef48dad-d185-481e-93ae-a0dbce18c960/collection/34496769-9be1afaa-e9c6-4ff9-acc9-00a1103654ac?action=share&source=collection_link&creator=34496769"
+	},
+	"item": [
+		{
+			"name": "Single seat Book Copy",
+			"item": [
+				{
+					"name": "authtoken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Auth Token\", function ()\r",
+									" {\r",
+									"    if(jsonData.status===1&&jsonData.data.authToken!=={})\r",
+									"    {\r",
+									"    pm.collectionVariables.set(\"AuthToken\", jsonData.data.authToken);\r",
+									"    console.log(\"AuthToken : \" +jsonData.data.authToken);\r",
+									"    }\r",
+									"    else\r",
+									"    {\r",
+									"        console.log(\"AuthToken not Generated\");\r",
+									"    }\r",
+									" });\r",
+									"\r",
+									"    pm.test(\"Valid Credentials\", function()\r",
+									"    {\r",
+									"    if(jsonData.status===1&&jsonData.data.authToken!==null)\r",
+									"    {   \r",
+									"        console.log(\"Logged by User\");\r",
+									"    }\r",
+									"    });\r",
+									"\r",
+									"\r",
+									"pm.test(\"Invalid Namespace\", function ()\r",
+									" {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errorCode).to.contains(104);\r",
+									"    console.log(jsonData.errorDesc);\r",
+									" });\r",
+									"\r",
+									"pm.test(\"Invalid Username\", function () \r",
+									" {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errorCode).to.contains(102);\r",
+									"    console.log(jsonData.errorDesc);\r",
+									" });\r",
+									"\r",
+									"pm.test(\"Invalid Password\", function () \r",
+									" {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errorCode).to.contains(101);\r",
+									"    console.log(jsonData.errorDesc);\r",
+									" });\r",
+									"\r",
+									"pm.test(\"Invalid DeviceMedium\", function () \r",
+									" {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errorCode).to.contains(103);\r",
+									"    console.log(jsonData.errorDesc);\r",
+									" });\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{URL}}/busservices/auth/getAuthToken?namespaceCode=devbits&username=arun&password=helloarun&devicemedium=WEB",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"busservices",
+								"auth",
+								"getAuthToken"
+							],
+							"query": [
+								{
+									"key": "namespaceCode",
+									"value": "devbits"
+								},
+								{
+									"key": "username",
+									"value": "arun"
+								},
+								{
+									"key": "password",
+									"value": "helloarun"
+								},
+								{
+									"key": "devicemedium",
+									"value": "WEB"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Open Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get today's date\r",
+									"function getTodayDate() {\r",
+									"    let today = new Date();\r",
+									"    \r",
+									"    let year = today.getFullYear();\r",
+									"    let month = (\"0\" + (today.getMonth() + 1)).slice(-2);\r",
+									"    let day = (\"0\" + today.getDate()).slice(-2);\r",
+									"    \r",
+									"    return `${year}-${month}-${day}`;\r",
+									"}\r",
+									"let TravelDate = getTodayDate();\r",
+									"pm.collectionVariables.set(\"TravelDate\", TravelDate);\r",
+									"\r",
+									"\r",
+									"//Sava Trips\r",
+									"pm.test(\"Save Trips\", function() \r",
+									"{ \r",
+									"    var jsonData = pm.response.json();\r",
+									"\r",
+									"        for(var i=0; i<Math.min(100,jsonData.data.length); i++)\r",
+									"        {\r",
+									"            if(jsonData.data[i].schedule && jsonData.data[i].schedule.name)\r",
+									"            {\r",
+									"                pm.collectionVariables.set(\"Trip \" + i, jsonData.data[i].schedule.name);\r",
+									"                console.log(\"Trip \" + (i+1) + \":\" + jsonData.data[i].schedule.name);\r",
+									"            }\r",
+									"            else \r",
+									"            {\r",
+									"                console.log(\"Unable To Save Trip Name \" + (i+1));\r",
+									"            }\r",
+									"        }\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Trip Details\", function()\r",
+									"{\r",
+									"    var jsonData = pm.response.json();\r",
+									"    //Pick The Random Trip\r",
+									"    var randomTrip = jsonData.data[Math.floor(Math.random() * jsonData.data.length)];\r",
+									"    //Save The Random Trip as a Collection Variable\r",
+									"     pm.collectionVariables.set(\"tripCode\", randomTrip.tripCode);\r",
+									"    if(randomTrip.tripStatus && randomTrip.tripStatus.code==\"TPO\") \r",
+									"    {\r",
+									"\r",
+									"         console.log(\"Trip Name : \"+randomTrip.schedule.name);\r",
+									"    \r",
+									"        pm.collectionVariables.set(\"fromStation\", randomTrip.fromStation.code);\r",
+									"        console.log(\"From Station :\" +randomTrip.fromStation.name);\r",
+									"\r",
+									"        pm.collectionVariables.set(\"toStation\", randomTrip.toStation.code);\r",
+									"        console.log(\"To Station :\" +randomTrip.toStation.name);\r",
+									"\r",
+									"        pm.collectionVariables.set(\"boardingPoint\", randomTrip.fromStation.stationPoint[0].code);\r",
+									"        console.log(\"Boarding Point :\" +randomTrip.fromStation.stationPoint[0].name);\r",
+									"   \r",
+									"        pm.collectionVariables.set(\"dropingPoint\", randomTrip.toStation.stationPoint[0].code);\r",
+									"        console.log(\"Droping Point :\" +randomTrip.toStation.stationPoint[0].name);\r",
+									"\r",
+									"        }\r",
+									"    else\r",
+									"        {\r",
+									"            console.log(\"The Trip Is Closed\");\r",
+									"        }\r",
+									"         \r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/search/OPENSRCH/OPENSRCH/{{TravelDate}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"busservices",
+								"{{AuthToken}}",
+								"commerce",
+								"search",
+								"OPENSRCH",
+								"OPENSRCH",
+								"{{TravelDate}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bus Map",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									" var jsonData = pm.response.json();\r",
+									"    \r",
+									"var RandomSeat = jsonData.data.bus.seatLayoutList[Math.floor(Math.random() * jsonData.data.bus.seatLayoutList.length)]; \r",
+									"\r",
+									"pm.test(\"Available Seat\", function () {\r",
+									"     var responseBody = pm.response.json();\r",
+									"     pm.expect(responseBody).to.be.an('object');\r",
+									"     pm.expect(responseBody.data.availableSeatCount).to.exist.and.to.be.a('number');\r",
+									"});\r",
+									"{\r",
+									"    pm.collectionVariables.set(\"SeatCode\", RandomSeat.code);\r",
+									"\r",
+									"       pm.expect(RandomSeat.seatStatus.code).to.contains(\"AL\");\r",
+									"\r",
+									"        pm.collectionVariables.set(\"SeatName\", RandomSeat.seatName)\r",
+									"        console.log(\"Seat Name : \" +RandomSeat.seatName);\r",
+									"\r",
+									"        pm.collectionVariables.set(\"SeatFare\", RandomSeat.seatFare);\r",
+									"        console.log(\"Seat Fare : \" +RandomSeat.seatFare);\r",
+									"   \r",
+									"};\r",
+									"\r",
+									"pm.test(\"Blocked Seat\", function ()\r",
+									"{\r",
+									"        pm.expect(RandomSeat.seatStatus.code).to.contains(\"BL\");\r",
+									"        console.log(\"Seat Already Blocked\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Booked Seat\", function ()\r",
+									"{\r",
+									"        pm.expect(RandomSeat.seatStatus.code).to.contains(\"BO\");\r",
+									"        console.log(\"Seat Already Booked\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Available For Both Gender\", function ()\r",
+									"{\r",
+									"        pm.expect(RandomSeat.seatGendarStatus.code).to.contains(\"AL\");\r",
+									"        console.log(\"No Gender Restiction\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Available For Female\", function ()\r",
+									"{\r",
+									"        pm.expect(RandomSeat.seatGendarStatus.code).to.contains(\"F\");\r",
+									"        console.log(\"Gender Restricted For Female\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Available For Male\", function ()\r",
+									"{\r",
+									"        pm.expect(RandomSeat.seatGendarStatus.code).to.contains(\"M\");\r",
+									"        console.log(\"Gender Restricted For Male\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Passanger Details\", function ()\r",
+									"{\r",
+									"    //Gender Selection\r",
+									"         let count = pm.collectionVariables.get(\"counter\") || 0;\r",
+									"         let genders = ['M','F'];\r",
+									"         let gender = genders[count%2];\r",
+									"\r",
+									"\r",
+									"    let PassangerName = pm.variables.replaceIn('{{$randomFullName}}');\r",
+									"        pm.collectionVariables.set(\"Pass_Name\", PassangerName);\r",
+									"        console.log(\"Passanger Name : \" + PassangerName);\r",
+									"\r",
+									"        pm.collectionVariables.set(\"Pass_Age\", 27);\r",
+									"        console.log(\"Age : \" + pm.collectionVariables.get(\"Pass_Age\"));\r",
+									"\r",
+									"        pm.collectionVariables.set(\"gender\", gender);\r",
+									"        count++;\r",
+									"        pm.collectionVariables.set(\"counter\",count);\r",
+									"        console.log(\"Gender : \" +gender);\r",
+									"        \r",
+									"    let PassangerEmail= pm.variables.replaceIn('{{$randomEmail}}');\r",
+									"    pm.collectionVariables.set(\"Pass_Email\", PassangerEmail);\r",
+									"    console.log(\"Email Id : \" + PassangerEmail);\r",
+									"\r",
+									"    pm.collectionVariables.set(\"PassMobileNo\", 9998887776);\r",
+									"    console.log(\"Mobile No : \" + pm.collectionVariables.get(\"PassMobileNo\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/busmap/{{tripCode}}/{{fromStation}}/{{toStation}}/{{TravelDate}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"busservices",
+								"{{AuthToken}}",
+								"commerce",
+								"busmap",
+								"{{tripCode}}",
+								"{{fromStation}}",
+								"{{toStation}}",
+								"{{TravelDate}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block a Seat",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var statusCode = pm.response.code;\r",
+									"pm.test(\"Response Succeed\", function () {\r",
+									"    pm.expect([200, 201]).to.include(statusCode);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Save PNR\", function() \r",
+									"{ \r",
+									"        pm.expect(\"1\").to.include(jsonData.status);\r",
+									"        pm.collectionVariables.set(\"PNR\", jsonData.data.code);\r",
+									"        console.log(\"PNR : \" + jsonData.data.code);\r",
+									"        console.log(\"Seat Is Blocked\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cannot Save PNR\", function() {\r",
+									"    \r",
+									"   pm.expect(\"0\").to.include(jsonData.status);\r",
+									"        console.log(jsonData.errorDesc);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check Phone Booking\", function() {\r",
+									"    \r",
+									"    pm.expect(jsonData.data.phoneBookingFlag).to.be.true;\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid Seatcode\" , function()\r",
+									"{\r",
+									"    pm.expect(\"BO01\").to.include(jsonData.errorCode);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailId\": \"{{Pass_Email}}\",\r\n    \"phoneBookingFlag\": \"false\",\r\n    \"freeServiceFlag\": \"false\",\r\n    \"mobileNumber\": \"{{PassMobileNo}}\",\r\n    \"orderDetails\": [\r\n        {\r\n            \"boardingPoint\": {\r\n                \"code\": \"{{boardingPoint}}\"\r\n            },\r\n            \"ticketDetails\": [\r\n                {\r\n                    \"seatCode\": \"{{SeatCode}}\",\r\n                    \"passengerGendar\": \"{{gender}}\",\r\n                    \"passengerName\": \"{{Pass_Name}}\",\r\n                    \"passengerAge\": \"{{Pass_Age}}\",\r\n                    \"seatFare\": \"{{SeatFare}}\",\r\n                    \"seatName\": \"{{SeatName}}\",\r\n                    \"idProof\": null\r\n                }\r\n            ],\r\n            \"journeyType\": \"OW\",\r\n            \"tripCode\": \"{{tripCode}}\",\r\n            \"fromStation\": {\r\n                \"code\": \"{{fromStation}}\"\r\n            },\r\n            \"toStation\": {\r\n                \"code\": \"{{toStation}}\"\r\n            },\r\n            \"travelDate\": \"{{TravelDate}}\",\r\n            \"droppingPoint\": {\r\n                \"code\": \"{{dropingPoint}}\"\r\n            }\r\n        }\r\n    ],\r\n    \"gatewayPartner\": {\r\n        \"code\": null\r\n    },\r\n    \"paymentGatewayProcessFlag\": false,\r\n    \"responseUrl\": \"\",\r\n    \"additionalAttributes\": {\r\n        \"INCLUSIVE_GST\": \"0\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/ticket/blockingV3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"busservices",
+								"{{AuthToken}}",
+								"commerce",
+								"ticket",
+								"blockingV3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Seat",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Confirmation\", function ()\r",
+									"{\r",
+									"    pm.expect(1).to.equals(jsonData.status);\r",
+									"    console.log(\"Booking Confirmed\");  \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Not Confirmed\", function ()\r",
+									"{\r",
+									"    pm.expect(0).to.equals(jsonData.status);\r",
+									"    console.log(jsonData.errorDesc); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check From Station\", function ()\r",
+									"{ \r",
+									"    pm.expect(pm.collectionVariables.get(\"fromStation\")).to.include(jsonData.data.ticket[0].fromStation.code);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check To Station\", function ()\r",
+									"{\r",
+									"    pm.expect(pm.collectionVariables.get(\"toStation\")).to.include(jsonData.data.ticket[0].toStation.code);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check Ticket Status\", function ()\r",
+									"{\r",
+									"    pm.expect(\"BO\").to.include(jsonData.data.ticket[0].ticketStatus.code);\r",
+									"\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"ticketCode\":\"{{PNR}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/ticket/confirm/{{PNR}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"busservices",
+								"{{AuthToken}}",
+								"commerce",
+								"ticket",
+								"confirm",
+								"{{PNR}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "AuthToken",
+			"value": ""
+		},
+		{
+			"key": "TravelDate",
+			"value": ""
+		},
+		{
+			"key": "Trip 0",
+			"value": ""
+		},
+		{
+			"key": "Trip 1",
+			"value": ""
+		},
+		{
+			"key": "Trip 2",
+			"value": ""
+		},
+		{
+			"key": "Trip 3",
+			"value": ""
+		},
+		{
+			"key": "Trip 4",
+			"value": ""
+		},
+		{
+			"key": "Trip 5",
+			"value": ""
+		},
+		{
+			"key": "Trip 6",
+			"value": ""
+		},
+		{
+			"key": "Trip 7",
+			"value": ""
+		},
+		{
+			"key": "Trip 8",
+			"value": ""
+		},
+		{
+			"key": "Trip 9",
+			"value": ""
+		},
+		{
+			"key": "Trip 10",
+			"value": ""
+		},
+		{
+			"key": "Trip 11",
+			"value": ""
+		},
+		{
+			"key": "Trip 12",
+			"value": ""
+		},
+		{
+			"key": "Trip 13",
+			"value": ""
+		},
+		{
+			"key": "Trip 14",
+			"value": ""
+		},
+		{
+			"key": "Trip 15",
+			"value": ""
+		},
+		{
+			"key": "Trip 16",
+			"value": ""
+		},
+		{
+			"key": "Trip 17",
+			"value": ""
+		},
+		{
+			"key": "Trip 18",
+			"value": ""
+		},
+		{
+			"key": "Trip 19",
+			"value": ""
+		},
+		{
+			"key": "Trip 20",
+			"value": ""
+		},
+		{
+			"key": "Trip 21",
+			"value": ""
+		},
+		{
+			"key": "Trip 22",
+			"value": ""
+		},
+		{
+			"key": "Trip 23",
+			"value": ""
+		},
+		{
+			"key": "Trip 24",
+			"value": ""
+		},
+		{
+			"key": "Trip 25",
+			"value": ""
+		},
+		{
+			"key": "Trip 26",
+			"value": ""
+		},
+		{
+			"key": "Trip 27",
+			"value": ""
+		},
+		{
+			"key": "Trip 28",
+			"value": ""
+		},
+		{
+			"key": "Trip 29",
+			"value": ""
+		},
+		{
+			"key": "Trip 30",
+			"value": ""
+		},
+		{
+			"key": "Trip 31",
+			"value": ""
+		},
+		{
+			"key": "Trip 32",
+			"value": ""
+		},
+		{
+			"key": "Trip 33",
+			"value": ""
+		},
+		{
+			"key": "Trip 34",
+			"value": ""
+		},
+		{
+			"key": "Trip 35",
+			"value": ""
+		},
+		{
+			"key": "Trip 36",
+			"value": ""
+		},
+		{
+			"key": "Trip 37",
+			"value": ""
+		},
+		{
+			"key": "Trip 38",
+			"value": ""
+		},
+		{
+			"key": "Trip 39",
+			"value": ""
+		},
+		{
+			"key": "Trip 40",
+			"value": ""
+		},
+		{
+			"key": "Trip 41",
+			"value": ""
+		},
+		{
+			"key": "Trip 42",
+			"value": ""
+		},
+		{
+			"key": "Trip 43",
+			"value": ""
+		},
+		{
+			"key": "Trip 44",
+			"value": ""
+		},
+		{
+			"key": "Trip 45",
+			"value": ""
+		},
+		{
+			"key": "Trip 46",
+			"value": ""
+		},
+		{
+			"key": "Trip 47",
+			"value": ""
+		},
+		{
+			"key": "Trip 48",
+			"value": ""
+		},
+		{
+			"key": "Trip 49",
+			"value": ""
+		},
+		{
+			"key": "Trip 50",
+			"value": ""
+		},
+		{
+			"key": "Trip 51",
+			"value": ""
+		},
+		{
+			"key": "Trip 52",
+			"value": ""
+		},
+		{
+			"key": "Trip 53",
+			"value": ""
+		},
+		{
+			"key": "Trip 54",
+			"value": ""
+		},
+		{
+			"key": "Trip 55",
+			"value": ""
+		},
+		{
+			"key": "Trip 56",
+			"value": ""
+		},
+		{
+			"key": "Trip 57",
+			"value": ""
+		},
+		{
+			"key": "Trip 58",
+			"value": ""
+		},
+		{
+			"key": "Trip 59",
+			"value": ""
+		},
+		{
+			"key": "Trip 60",
+			"value": ""
+		},
+		{
+			"key": "Trip 61",
+			"value": ""
+		},
+		{
+			"key": "Trip 62",
+			"value": ""
+		},
+		{
+			"key": "Trip 63",
+			"value": ""
+		},
+		{
+			"key": "Trip 64",
+			"value": ""
+		},
+		{
+			"key": "Trip 65",
+			"value": ""
+		},
+		{
+			"key": "Trip 66",
+			"value": ""
+		},
+		{
+			"key": "Trip 67",
+			"value": ""
+		},
+		{
+			"key": "Trip 68",
+			"value": ""
+		},
+		{
+			"key": "Trip 69",
+			"value": ""
+		},
+		{
+			"key": "Trip 70",
+			"value": ""
+		},
+		{
+			"key": "Trip 71",
+			"value": ""
+		},
+		{
+			"key": "Trip 72",
+			"value": ""
+		},
+		{
+			"key": "Trip 73",
+			"value": ""
+		},
+		{
+			"key": "Trip 74",
+			"value": ""
+		},
+		{
+			"key": "Trip 75",
+			"value": ""
+		},
+		{
+			"key": "Trip 76",
+			"value": ""
+		},
+		{
+			"key": "Trip 77",
+			"value": ""
+		},
+		{
+			"key": "Trip 78",
+			"value": ""
+		},
+		{
+			"key": "Trip 79",
+			"value": ""
+		},
+		{
+			"key": "Trip 80",
+			"value": ""
+		},
+		{
+			"key": "Trip 81",
+			"value": ""
+		},
+		{
+			"key": "Trip 82",
+			"value": ""
+		},
+		{
+			"key": "tripCode",
+			"value": ""
+		},
+		{
+			"key": "URL",
+			"value": "dev-app.ezeebits.in",
+			"type": "default"
+		},
+		{
+			"key": "fromStation",
+			"value": ""
+		},
+		{
+			"key": "toStation",
+			"value": ""
+		},
+		{
+			"key": "boardingPoint",
+			"value": ""
+		},
+		{
+			"key": "dropingPoint",
+			"value": ""
+		},
+		{
+			"key": "SeatCode",
+			"value": ""
+		},
+		{
+			"key": "SeatName",
+			"value": ""
+		},
+		{
+			"key": "SeatFare",
+			"value": ""
+		},
+		{
+			"key": "Pass_Name",
+			"value": ""
+		},
+		{
+			"key": "Pass_Age",
+			"value": ""
+		},
+		{
+			"key": "gender",
+			"value": ""
+		},
+		{
+			"key": "counter",
+			"value": ""
+		},
+		{
+			"key": "Pass_Email",
+			"value": ""
+		},
+		{
+			"key": "PassMobileNo",
+			"value": ""
+		},
+		{
+			"key": "PNR",
+			"value": ""
+		},
+		{
+			"key": "Trip 83",
+			"value": ""
+		},
+		{
+			"key": "Trip 84",
+			"value": ""
+		},
+		{
+			"key": "Trip 85",
+			"value": ""
+		},
+		{
+			"key": "Trip 86",
+			"value": ""
+		},
+		{
+			"key": "Trip 87",
+			"value": ""
+		},
+		{
+			"key": "Trip 88",
+			"value": ""
+		}
+	]
+}
