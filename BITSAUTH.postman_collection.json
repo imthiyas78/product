@@ -1,0 +1,52 @@
+{
+	"info": {
+		"_postman_id": "8b976132-036d-4e36-8460-46d3bac5bf3f",
+		"name": "BITSAUTH",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40653860"
+	},
+	"item": [
+		{
+			"name": "BITS STAGING",
+			"item": [
+				{
+					"name": "authtoken",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/busservices/auth/getAuthToken?namespaceCode=devbits&username=arun&password=helloarun&devicemedium=WEB",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"busservices",
+								"auth",
+								"getAuthToken"
+							],
+							"query": [
+								{
+									"key": "namespaceCode",
+									"value": "devbits"
+								},
+								{
+									"key": "username",
+									"value": "arun"
+								},
+								{
+									"key": "password",
+									"value": "helloarun"
+								},
+								{
+									"key": "devicemedium",
+									"value": "WEB"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
