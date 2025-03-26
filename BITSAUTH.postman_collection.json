@@ -10,7 +10,32 @@
 			"name": "BITS STAGING",
 			"item": [
 				{
-					"name": "authtoken",
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									" \r",
+									"pm.test(\"Auth Token\", function ()\r",
+									" {\r",
+									"    if(jsonData.status===1&&jsonData.data.authToken!=={})\r",
+									"    {\r",
+									"    pm.collectionVariables.set(\"AuthToken\", jsonData.data.authToken);\r",
+									"    console.log(\"AuthToken : \" +jsonData.data.authToken);\r",
+									"    }\r",
+									"    else\r",
+									"    {\r",
+									"        console.log(\"AuthToken not Generated\");\r",
+									"    }\r",
+									" });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -50,6 +75,12 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"variable": [
+		{
+			"key": "AuthToken",
+			"value": ""
 		}
 	]
 }
