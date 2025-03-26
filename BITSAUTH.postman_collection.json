@@ -15,9 +15,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/busservices/auth/getAuthToken?namespaceCode=devbits&username=arun&password=helloarun&devicemedium=WEB",
+							"raw": "http://dev-app.ezeebits.in/busservices/auth/getAuthToken?namespaceCode=devbits&username=arun&password=helloarun&devicemedium=WEB",
+							"protocol": "http",
 							"host": [
-								"{{URL}}"
+								"dev-app",
+								"ezeebits",
+								"in"
 							],
 							"path": [
 								"busservices",
