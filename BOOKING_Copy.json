@@ -347,7 +347,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/busmap/{{tripCode}}/{{fromStation}}/{{toStation}}/{{TravelDate}}",
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/busmap/{{tripCode}}/{{fromStation}}/{{toStation}}/2025-04-25",
 							"host": [
 								"{{URL}}"
 							],
