@@ -137,17 +137,17 @@
 							"script": {
 								"exec": [
 									"// Get today's date\r",
-									"function getTodayDate() {\r",
-									"    let today = new Date();\r",
+									"// function getTodayDate() {\r",
+									"//     let today = new Date();\r",
 									"    \r",
-									"    let year = today.getFullYear();\r",
-									"    let month = (\"0\" + (today.getMonth() + 1)).slice(-2);\r",
-									"    let day = (\"0\" + today.getDate()).slice(-2);\r",
+									"//     let year = today.getFullYear();\r",
+									"//     let month = (\"0\" + (today.getMonth() + 1)).slice(-2);\r",
+									"//     let day = (\"0\" + today.getDate()).slice(-2);\r",
 									"    \r",
-									"    return `${year}-${month}-${day}`;\r",
-									"}\r",
-									"let TravelDate = getTodayDate();\r",
-									"pm.collectionVariables.set(\"TravelDate\", TravelDate);\r",
+									"//     return `${year}-${month}-${day}`;\r",
+									"// }\r",
+									"// let TravelDate = getTodayDate();\r",
+									"// pm.collectionVariables.set(\"TravelDate\", TravelDate);\r",
 									"\r",
 									"\r",
 									"//Sava Trips\r",
@@ -181,7 +181,7 @@
 									"    // if(randomTrip.tripStatus && randomTrip.tripStatus.code==\"TPC\"){\r",
 									"    //     break;\r",
 									"    // }\r",
-									"    if(randomTrip.tripStatus && randomTrip.tripStatus.code==\"TPC\") \r",
+									"    if(randomTrip.tripStatus && randomTrip.tripStatus.code==\"TPO\") \r",
 									"    {\r",
 									"\r",
 									"         console.log(\"Trip Name : \"+randomTrip.schedule.name);\r",
@@ -225,7 +225,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/search/OPENSRCH/OPENSRCH/2025-04-23",
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/search/OPENSRCH/OPENSRCH/2025-04-25",
 							"host": [
 								"{{URL}}"
 							],
@@ -236,7 +236,7 @@
 								"search",
 								"OPENSRCH",
 								"OPENSRCH",
-								"2025-04-23"
+								"2025-04-25"
 							]
 						}
 					},
@@ -347,7 +347,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/busmap/{{tripCode}}/{{fromStation}}/{{toStation}}/{{TravelDate}}",
+							"raw": "{{URL}}/busservices/{{AuthToken}}/commerce/busmap/{{tripCode}}/{{fromStation}}/{{toStation}}/2025-04-25",
 							"host": [
 								"{{URL}}"
 							],
@@ -359,7 +359,7 @@
 								"{{tripCode}}",
 								"{{fromStation}}",
 								"{{toStation}}",
-								"{{TravelDate}}"
+								"2025-04-25"
 							]
 						}
 					},
